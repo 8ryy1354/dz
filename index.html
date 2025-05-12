@@ -9,6 +9,7 @@
     button { padding: 8px 12px; }
     ul { list-style: none; padding: 0; }
     li { margin-top: 10px; border-bottom: 1px solid #ccc; padding: 5px 0; }
+    #count { margin-top: 10px; font-weight: bold; color: #333; }
   </style>
 </head>
 <body>
@@ -16,6 +17,9 @@
   <input type="text" id="searchInput" placeholder="请输入关键字，如城市或日期">
   <button onclick="search()">搜索</button>
   
+  <!-- ✅ 新增结果数量展示区域 -->
+  <div id="count"></div>
+
   <ul id="results"></ul>
 
   <script>
@@ -29,7 +33,9 @@
     function search() {
       const keyword = document.getElementById('searchInput').value.trim();
       const results = document.getElementById('results');
+      const countDiv = document.getElementById('count');
       results.innerHTML = '';
+      countDiv.textContent = '';
 
       const filtered = data.filter(item =>
         item.地区.includes(keyword) || item.日期.includes(keyword)
@@ -37,14 +43,16 @@
 
       if (filtered.length === 0) {
         results.innerHTML = '<li>未找到匹配结果</li>';
-        return;
+      } else {
+        filtered.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = `${item.地区}（日期：${item.日期}）`;
+          results.appendChild(li);
+        });
       }
 
-      filtered.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.地区}（日期：${item.日期}）`;
-        results.appendChild(li);
-      });
+      // ✅ 显示搜索结果总数
+      countDiv.textContent = `共找到 ${filtered.length} 条结果`;
     }
   </script>
 </body>
