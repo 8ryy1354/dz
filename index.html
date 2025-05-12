@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>地址查询系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: sans-serif; padding: 30px; }
-    input { padding: 8px; width: 300px; }
-    button { padding: 8px 12px; }
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    input { padding: 10px; width: 100%; font-size: 16px; box-sizing: border-box; }
+    button { padding: 10px 16px; margin-top: 10px; font-size: 16px; }
     ul { list-style: none; padding: 0; }
-    li { margin-top: 10px; border-bottom: 1px solid #ccc; padding: 5px 0; }
-    #count { margin-top: 10px; font-weight: bold; color: #333; }
+    li { margin-top: 10px; border-bottom: 1px solid #ccc; padding: 6px 0; }
+    #count { margin-top: 12px; font-weight: bold; color: #333; }
   </style>
 </head>
 <body>
-  <h1>地址查询系统</h1>
-  <input type="text" id="searchInput" placeholder="请输入关键字，如城市或日期">
+  <h2>地址查询系统</h2>
+  <input type="text" id="searchInput" placeholder="请输入关键字（城市/日期）" inputmode="search">
   <button onclick="search()">搜索</button>
   
-  <!-- ✅ 新增结果数量展示区域 -->
   <div id="count"></div>
-
   <ul id="results"></ul>
 
   <script>
@@ -37,6 +36,11 @@
       results.innerHTML = '';
       countDiv.textContent = '';
 
+      if (!keyword) {
+        countDiv.textContent = '请输入关键词进行搜索';
+        return;
+      }
+
       const filtered = data.filter(item =>
         item.地区.includes(keyword) || item.日期.includes(keyword)
       );
@@ -51,9 +55,16 @@
         });
       }
 
-      // ✅ 显示搜索结果总数
       countDiv.textContent = `共找到 ${filtered.length} 条结果`;
     }
+
+    // ✅ 支持回车键/手机“搜索”键触发搜索
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        search();
+        e.preventDefault(); // 防止回车刷新
+      }
+    });
   </script>
 </body>
 </html>
