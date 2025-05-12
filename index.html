@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>地址查询系统</title>
+  <style>
+    body { font-family: sans-serif; padding: 30px; }
+    input { padding: 8px; width: 300px; }
+    button { padding: 8px 12px; }
+    ul { list-style: none; padding: 0; }
+    li { margin-top: 10px; border-bottom: 1px solid #ccc; padding: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>地址查询系统</h1>
+  <input type="text" id="searchInput" placeholder="请输入关键字，如城市或日期">
+  <button onclick="search()">搜索</button>
+  
+  <ul id="results"></ul>
+
+  <script>
+    let data = [];
+
+    fetch('data.json')
+      .then(res => res.json())
+      .then(json => data = json)
+      .catch(err => alert("加载数据失败：" + err));
+
+    function search() {
+      const keyword = document.getElementById('searchInput').value.trim();
+      const results = document.getElementById('results');
+      results.innerHTML = '';
+
+      const filtered = data.filter(item =>
+        item.地区.includes(keyword) || item.日期.includes(keyword)
+      );
+
+      if (filtered.length === 0) {
+        results.innerHTML = '<li>未找到匹配结果</li>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.地区}（日期：${item.日期}）`;
+        results.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
